@@ -33,5 +33,25 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+      - name: Test (with coverage)
+        run: |
+          dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      - name: Generate coverage report
+        run: |
+          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html;Cobertura
+      - name: Check coverage threshold
+        shell: pwsh
+        run: |
+          $cov = Get-ChildItem -Path . -Filter 'coverage.cobertura.xml' -Recurse | Select-Object -First 1
+          if (-not $cov) { Write-Error 'Coverage report not found'; exit 1 }
+          $xml = [xml](Get-Content $cov.FullName)
+          $lineRate = [double]$xml.coverage.'@line-rate'
+          Write-Host "Coverage (line-rate): $lineRate"
+          if ($lineRate -lt 0.8) { Write-Error "Code coverage $([math]::Round($lineRate*100,2))% is below threshold (80%)"; exit 1 }
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report

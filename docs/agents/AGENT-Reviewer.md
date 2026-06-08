@@ -24,6 +24,7 @@ Review Checklist
 ### Security Review
 - ✓ No secrets, credentials, or API keys in code
 - ✓ No SQL injection vulnerabilities
+- ✓ Static analysis or tests confirm no injection vectors (SQL/command/LDAP/XPath)
 - ✓ No unsafe deserialization
 - ✓ No authentication bypass attempts
 - ✓ No weak cryptography
@@ -68,12 +69,15 @@ Reference: [Vertical Slices](https://jimmybogard.com/vertical-slice-architecture
 
 Reference: [OpenSpec Getting Started](https://github.com/Fission-AI/OpenSpec/blob/main/docs/getting-started.md)
 
-### Test Coverage Review
+### Test Coverage & Quality Gates Review
 - ✓ All new behavior has unit or integration tests
 - ✓ Critical paths (authentication, authorization, data access) tested
 - ✓ Edge cases covered (null, empty, invalid inputs)
 - ✓ Tests are focused and readable
 - ✓ No hardcoded test data (use factories)
+- ✓ CI test run passed successfully (100% of tests must pass before Reviewer completes)
+- ✓ CI coverage report exists and overall coverage is ≥ 80%; coverage artifact attached
+- ✓ Health checks validated in CI integration tests and report healthy status
 
 ### Scope & Requirements Review
 - ✓ No out-of-scope features added
