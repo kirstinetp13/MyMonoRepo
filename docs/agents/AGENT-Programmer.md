@@ -26,7 +26,9 @@ Patterns and guidance (recognition & suggestions)
   <!-- OWASP Top 10: https://owasp.org/www-project-top-ten/; MS Secure Dev: https://learn.microsoft.com/security/ -->
 
 Rules for contributions
-- All pull requests must include unit tests or integration tests for new behavior.
+- Follow Test-Driven Development (TDD): write the tests first (unit or integration) that express the acceptance criteria, observe the tests fail, then implement code to satisfy the tests. Tests expressing acceptance criteria must be present in the same feature branch and committed with the first implementation PR.
+- All pull requests must include unit tests or integration tests for new behavior; tests should cover edge cases and negative scenarios.
+- Aim for a minimum of 80% code coverage across the codebase. Coverage reports should be produced by CI and saved as build artifacts; see openspec/specs/quality/spec.md for enforcement details.
 - No secrets or credentials in code or configs. Use secret managers and CI vault integrations.
 - Prefer small, focused PRs aligning with vertical slice boundaries.
 

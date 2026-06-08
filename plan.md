@@ -14,8 +14,9 @@ Completed next-steps:
 3. Create feature branch and follow Organizer interview workflow (pending)
 
 Recommended immediate actions:
-- Add CI workflow to run `dotnet build` and `dotnet test` on main
+- Add CI workflow to run `dotnet build` and `dotnet test` on main (done)
 - Create first feature proposal under openspec/changes/ (e.g., add-health-check) and use Organizer to interview and create acceptance checklist
 - Add PR template and CODEOWNERS to enforce Reviewer approval
+- Update AGENT-Programmer to enforce TDD and add Quality Control spec (done)
 
 Owner: User (via Organizer)

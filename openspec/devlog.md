@@ -60,4 +60,49 @@ This devlog records all Organizer-coordinated LLM interactions and major reposit
 
 ---
 
+---
+
+## Entry: 2026-06-08T16:06:28.641+02:00
+
+- actor: Organizer
+- timestamp: 2026-06-08T16:06:28.641+02:00
+- trigger: User requested CI workflow (dotnet build + dotnet test)
+- action:
+  - Created CI workflow at .github/workflows/ci.yml to run dotnet build and dotnet test on push and PR to main.
+  - Committed and pushed workflow to origin/main.
+- repo: https://github.com/kirstinetp13/MyMonoRepo
+- branch: main
+- outcome: success
+- evidence:
+  - files_created:
+    - .github/workflows/ci.yml
+  - commands_executed:
+    - git add .github/workflows/ci.yml openspec/devlog.md plan.md
+    - git commit -m "ci: add GitHub Actions workflow for build and test" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+    - git push origin main
+- user_confirmation: yes
+
+---
+
+## Entry: 2026-06-08T16:15:11.012+02:00
+
+- actor: Organizer
+- timestamp: 2026-06-08T16:15:11.012+02:00
+- trigger: User requested Programmer agent update and a new Quality Control spec
+- action:
+  - Updated docs/agents/AGENT-Programmer.md to require Test-Driven Development (TDD) and explicit guidance for tests-first workflows.
+  - Added Quality Control specification at openspec/specs/quality/spec.md requiring: minimum 80% coverage, prevention of injection vulnerabilities, 100% tests passing before Reviewer completes, and health checks passing before merge.
+  - Committed changes and pushed to origin/main.
+- files_changed:
+  - docs/agents/AGENT-Programmer.md
+  - openspec/specs/quality/spec.md
+  - openspec/devlog.md
+  - plan.md
+- repo: https://github.com/kirstinetp13/MyMonoRepo
+- branch: main
+- outcome: success
+- user_confirmation: yes
+
+---
+
 (End of entry)
