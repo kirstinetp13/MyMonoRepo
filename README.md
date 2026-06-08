@@ -1,5 +1,7 @@
 # MyMonoRepo
 
+[![CI](https://github.com/kirstinetp13/MyMonoRepo/actions/workflows/ci.yml/badge.svg)](https://github.com/kirstinetp13/MyMonoRepo/actions/workflows/ci.yml)
+
 A modern .NET 10 monorepo optimized for vertical slices, clean architecture, and GitHub Copilot CLI integration.
 
 ## Architecture
