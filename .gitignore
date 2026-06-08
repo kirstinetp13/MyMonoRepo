@@ -1,0 +1,43 @@
+# OpenSpec
+openspec/changes/*/bin/
+openspec/changes/*/obj/
+openspec/changes/*/.generated/
+
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+.vs/
+.vscode/
+
+# Dependencies
+packages/
+.nuget/
+
+# Build results
+Release/
+Debug/
+
+# User-specific files
+.DS_Store
+*.log
+
+# IDEs
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets
+appsettings.local.json
+*.secret
+.env
+.env.local
+
+# Test results
+TestResults/
+.coverage/

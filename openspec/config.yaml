@@ -1,0 +1,68 @@
+# OpenSpec Configuration for MyMonoRepo
+# https://github.com/Fission-AI/OpenSpec/docs/customization.md
+
+project:
+  name: MyMonoRepo
+  description: "A modern .NET 10 monorepo using vertical slice architecture with CQRS pattern"
+  version: 1.0.0
+
+# Profile: 'core' includes propose, explore, apply, sync, archive commands
+# Profile: 'full' adds new, ff, continue, verify, bulk-archive, onboard commands
+# Use 'openspec config profile' to change between them
+profile: core
+
+# Domain organization - specs are organized by domain/bounded context
+domains:
+  - name: api
+    description: "Core API with vertical slice features"
+    path: "specs/api"
+  
+  - name: infrastructure
+    description: "Data access, persistence, external services"
+    path: "specs/infrastructure"
+
+# Specification format
+spec:
+  # Default sections for new specs
+  sections:
+    - name: "Overview"
+      required: true
+    - name: "Requirements"
+      required: true
+    - name: "Scenarios"
+      required: true
+    - name: "Constraints"
+      required: false
+
+# Change management
+changes:
+  # Where active changes are stored
+  active: "changes"
+  
+  # Where archived changes are stored
+  archive: "changes/archive"
+  
+  # Artifacts included in each change
+  artifacts:
+    - proposal.md
+    - design.md
+    - tasks.md
+    - specs
+
+# Integration with AGENT persona
+agent:
+  name: Programmer
+  guidelines: "docs/agents/AGENT-Programmer.md"
+  enforce_security: true
+  enforce_patterns: true
+
+# Version control
+vcs:
+  # Commits created by OpenSpec operations
+  auto_commit: false
+  commit_prefix: "spec:"
+
+# Export/Import
+export:
+  format: markdown
+  include_metadata: true
