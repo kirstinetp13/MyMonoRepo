@@ -11,7 +11,7 @@ Status:
 Completed next-steps:
 1. Record branch merge in openspec/devlog.md (done)
 2. Ensure CI (build/tests) configured in .github/workflows (done)
-3. Create feature branch and follow Organizer interview workflow (pending)
+3. Create feature branch and follow Organizer interview workflow (in_progress - feature/add-health-check-20260608T162510)
 
 Recommended immediate actions:
 - Add CI workflow to run `dotnet build` and `dotnet test` on main (done)

@@ -1,45 +1,25 @@
-# Tasks: Health Check Endpoint
+# Tasks: add-health-check
 
-## 1. Create MediatR Query & Handler
+TDD & Implementation Tasks
+--------------------------
+1. Create test suite skeleton under tests/Features/HealthCheck/ (unit & integration).
+2. Write failing unit tests for each IHealthCheck (DB, external API, disk space, config presence).
+3. Write integration test asserting /health/ready returns Healthy when mocks are healthy.
+4. Implement IHealthCheck classes and register via AddHealthChecksServices extension.
+5. Map endpoints: /health, /health/live, /health/ready and implement JSON shaping.
+6. Ensure no sensitive data in responses; redact details where necessary.
+7. Add logging for degraded/unhealthy checks.
+8. Update README and OpenAPI spec.
+9. Add Kubernetes probe examples to docs.
+10. Run CI and ensure coverage & tests pass.
 
-- [ ] 1.1 Create `GetHealthQuery.cs` record (MediatR IRequest)
-- [ ] 1.2 Create `HealthCheckDto` with Status, Timestamp, Uptime, Version
-- [ ] 1.3 Create `GetHealthQueryHandler` implementing IRequestHandler
-- [ ] 1.4 Implement handler logic:
-  - Get current time
-  - Calculate uptime from process start
-  - Determine status (Healthy for now)
-  - Return DTO
+CI & Release Tasks
+------------------
+1. Ensure integration tests are included in CI job.
+2. Validate coverage does not drop below 80% (feature branch).
+3. Upload coverage artifact and health-check test results.
+4. Close change in OpenSpec and merge delta into main specs once Reviewer approves.
 
-## 2. Create Endpoint
-
-- [ ] 2.1 Create `HealthCheckEndpoints.cs` static class
-- [ ] 2.2 Add `MapHealthCheckEndpoints()` extension method
-- [ ] 2.3 Register `GET /health` endpoint
-- [ ] 2.4 Inject `IMediator` in endpoint handler
-- [ ] 2.5 Send `GetHealthQuery` and return result
-
-## 3. Integration
-
-- [ ] 3.1 Add `using HealthCheckFeature;` in `Program.cs`
-- [ ] 3.2 Call `app.MapHealthCheckEndpoints();` in `Program.cs`
-- [ ] 3.3 Verify endpoint is registered
-
-## 4. Testing
-
-- [ ] 4.1 Test via `curl http://localhost:5000/health`
-- [ ] 4.2 Verify response format (JSON valid)
-- [ ] 4.3 Verify status code is 200
-- [ ] 4.4 Verify no authentication required
-
-## 5. Documentation
-
-- [ ] 5.1 Add endpoint description to `.openapi/openapi.yml`
-- [ ] 5.2 Document response schema
-- [ ] 5.3 Update README with new endpoint
-
-## Notes
-
-**Estimate**: 2 hours total  
-**Pattern Reference**: [Vertical Slice](https://jimmybogard.com/vertical-slice-architecture/)  
-**Owner**: Start with this to familiarize with vertical slice pattern
+Done when
+--------
+- All tests pass in CI, coverage >= 80%, health endpoints return Healthy in CI integration tests, OpenSpec change set completed, and PR approved by Reviewer.

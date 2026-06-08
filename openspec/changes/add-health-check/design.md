@@ -1,48 +1,45 @@
-# Design: Health Check Endpoint
+# Design: Add Health Check Endpoints
 
-## Technical Approach
+Overview
+--------
+Use .NET built-in Health Checks (Microsoft.Extensions.Diagnostics.HealthChecks) and minimal API endpoints to implement liveness and readiness probes. Implement pluggable IHealthCheck implementations for each dependency.
 
-### Endpoint Implementation
-- Single MediatR query: `GetHealthQuery`
-- Handler: `GetHealthQueryHandler`
-- DTO: `HealthCheckDto`
-- Minimal API endpoint: `GET /health`
+Key Decisions
+-------------
+- Endpoints: /health (composite), /health/live (liveness), /health/ready (readiness)
+- Use HealthCheckService to aggregate checks and translate to a structured JSON response.
+- Implement checks as small classes implementing IHealthCheck and register via DI.
+- Database check: attempt an open/close of a lightweight connection or run a simple test query using parameterized queries.
+- External API check: use a configurable HttpClient and lightweight HEAD/GET to expected endpoint; timeout short (e.g., 1s).
+- Disk space: check available free space on configured volume and fail if below threshold.
+- Config presence: verify required config keys exist and are non-empty.
 
-### Response Format
-```json
-{
-  "status": "Healthy",
-  "timestamp": "2025-06-08T14:47:57Z",
-  "uptime": {
-    "seconds": 3600,
-    "formatted": "1h 0m 0s"
-  },
-  "version": "1.0.0"
-}
-```
+Testing Strategy
+----------------
+- TDD: write unit tests for each IHealthCheck with mocked dependencies.
+- Integration test: host WebApplicationFactory for the API and assert /health/ready returns Healthy when dependencies are mocked to healthy states.
+- CI will include an integration step that runs health endpoint checks.
 
-### Architecture Decisions
+DI & Registration
+-----------------
+- Use extension method AddHealthChecksServices(this IServiceCollection services, IConfiguration config) to centralize registration.
+- Allow per-environment conditional checks (e.g., stub external checks in dev).
 
-**CQRS Pattern**: Use MediatR query pattern  
-Reference: https://martinfowler.com/bliki/CQRS.html
+Security & Privacy
+------------------
+- Health responses MUST NOT include secrets (connection strings, tokens, credentials).
+- Details field should be limited and scrubbed of sensitive values.
 
-**Vertical Slice**: Place in `Features/HealthCheck/`  
-Reference: https://jimmybogard.com/vertical-slice-architecture/
+Operational Notes
+-----------------
+- Provide example Kubernetes liveness/readiness probe snippets in documentation.
+- Emit structured logs when checks degrade.
+- Consider exposing minimal metrics for alerting integration.
 
-**Status Values**: Follow RFC 7231 HTTP semantics
-- `Healthy`: All systems operational (200 OK)
-- `Degraded`: Non-critical issues (200 OK)
-- `Unhealthy`: Critical issues (503 Service Unavailable)
-
-### Security
-- No authentication required (public endpoint)
-- Rate limiting recommended for production
-- No sensitive data in response
-
-## Implementation Plan
-
-1. Create MediatR query and handler
-2. Create response DTO
-3. Create endpoint mapper
-4. Register in Program.cs
-5. Add to OpenAPI spec
+Implementation Plan
+-------------------
+1. Create per-check IHealthCheck implementations
+2. Write unit tests (TDD) for each check
+3. Create integration tests for endpoints
+4. Register checks and map endpoints in Program.cs
+5. Update OpenAPI and README

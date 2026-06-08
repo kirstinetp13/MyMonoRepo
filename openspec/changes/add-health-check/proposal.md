@@ -1,39 +1,23 @@
-# Proposal: Add Health Check Endpoint
+# Proposal: Add Health Check Endpoints
 
-## Intent
+Summary
+-------
+Add robust health check endpoints to the API to support liveness and readiness probes, automated CI verification, and operational monitoring.
 
-Provide a dedicated health check endpoint for monitoring, load balancers, and orchestration tools (Kubernetes, Azure Container Instances, etc.) to verify API availability and readiness.
+Acceptance Checklist (approved)
+--------------------------------
+1. Endpoint: GET /health, GET /health/live, GET /health/ready (no auth). 200 OK on healthy.
+2. Response JSON: { status: "Healthy|Degraded|Unhealthy", checks: [{ name, status, details? }], timestamp, version }
+3. Liveness and readiness probes implemented; readiness includes dependent services (DB, external APIs), liveness only confirms app process alive.
+4. Checks: database connectivity, configurable external API(s), cache (if present), disk space, required configuration presence.
+5. Health checks must be composable, registerable via DI, and each check unit-tested.
+6. CI must include integration tests asserting health endpoints return healthy in a healthy environment.
+7. OpenSpec artifacts: proposal.md, design.md, tasks.md (this change set) and delta spec added.
+8. Tests-first (TDD): tests created before implementation; unit tests for checks and integration tests for endpoints.
+9. Monitoring: emit logs/metrics when checks degrade; responses must not include secrets.
+10. Documentation: README and API spec updated; include k8s probe examples.
+11. Reviewer gates: 100% tests passing in CI, coverage not below threshold, and health checks pass in CI before Reviewer completes.
 
-## Scope
+Owner: Organizer / Programmer collaboration
 
-- Create `/health` endpoint that returns comprehensive status
-- Include basic health checks (e.g., memory, uptime)
-- Accessible without authentication
-- Return standard health status format
-
-## Approach
-
-- Implement as a single handler with MediatR
-- Use .NET's built-in HealthCheckMiddleware (extensible)
-- Return JSON response with:
-  - Status (Healthy, Degraded, Unhealthy)
-  - Timestamp
-  - Uptime
-  - Component status
-
-## Success Criteria
-
-- ✓ `/health` endpoint responds with 200 OK
-- ✓ Response includes status, timestamp, uptime
-- ✓ No authentication required
-- ✓ Meets Kubernetes health probe expectations
-
-## Dependencies
-
-- None (uses built-in .NET capabilities)
-
-## Estimated Effort
-
-- Design: 30 minutes
-- Implementation: 1 hour
-- Testing: 30 minutes
+Timeline: Small vertical-slice feature; aim for a single sprint-day delivery.
