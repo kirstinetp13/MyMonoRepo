@@ -35,7 +35,7 @@ jobs:
 
       - name: Test (with coverage)
         run: |
-          dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+          dotnet test ./tests/**/*.csproj --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/coverage.cobertura.xml
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
       - name: Generate coverage report
@@ -47,7 +47,10 @@ jobs:
           $cov = Get-ChildItem -Path . -Filter 'coverage.cobertura.xml' -Recurse | Select-Object -First 1
           if (-not $cov) { Write-Error 'Coverage report not found'; exit 1 }
           $xml = [xml](Get-Content $cov.FullName)
-          $lineRate = [double]$xml.coverage.'@line-rate'
+          # try multiple attributes depending on report format
+          $lineRate = 0
+          if ($xml.coverage -and $xml.coverage.'@line-rate') { $lineRate = [double]$xml.coverage.'@line-rate' }
+          elseif ($xml.GetType().Name -eq 'XmlDocument') { $node = $xml.SelectSingleNode('//coverage'); if ($node -and $node.Attributes['line-rate']) { $lineRate = [double]$node.Attributes['line-rate'].Value } }
           Write-Host "Coverage (line-rate): $lineRate"
           if ($lineRate -lt 0.8) { Write-Error "Code coverage $([math]::Round($lineRate*100,2))% is below threshold (80%)"; exit 1 }
       - name: Upload coverage report
@@ -55,3 +58,8 @@ jobs:
         with:
           name: coverage-report
           path: coverage-report
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage-report/*Coverage*.xml
+          fail_ci_if_error: true
